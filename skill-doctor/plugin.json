@@ -1,0 +1,6 @@
+{
+  "name": "skill-doctor",
+  "displayName": "Skill Doctor",
+  "version": "1.0.0",
+  "description": "Audit and auto-fix plugins and skills (BOM, missing plugin.json, invalid JSON, bad frontmatter)."
+}

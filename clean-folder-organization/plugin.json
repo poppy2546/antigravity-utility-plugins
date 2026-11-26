@@ -1,0 +1,6 @@
+{
+  "name": "clean-folder-organization",
+  "displayName": "Clean Folder Organization",
+  "version": "1.0.0",
+  "description": "Enforces organizing all generated files and scripts into dedicated subfolders to keep the desktop and workspace clean."
+}

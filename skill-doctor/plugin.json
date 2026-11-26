@@ -2,5 +2,5 @@
   "name": "skill-doctor",
   "displayName": "Skill Doctor",
   "version": "1.0.0",
-  "description": "Audit and auto-fix plugins and skills (BOM, missing plugin.json, invalid JSON, bad frontmatter)."
+  "description": "Audit and auto-fix plugins and skills across Antigravity, Claude Code, Cursor, and GitHub Copilot."
 }

@@ -6,13 +6,25 @@ const path = require('path');
 const os = require('os');
 
 const CHECK = process.argv.includes('--check');
+const home = os.homedir();
+const cwd = process.cwd();
 const ROOTS = [
-  path.join(os.homedir(), '.gemini', 'config', 'plugins'),
+  path.join(home, '.gemini', 'config', 'plugins'),
 ];
-const SKILL_ROOTS = [path.join(os.homedir(), '.gemini', 'skills')];
+const SKILL_ROOTS = [
+  path.join(home, '.gemini', 'skills'),
+  path.join(home, '.claude', 'skills'),
+  path.join(home, '.cursor', 'skills'),
+  path.join(home, '.copilot', 'skills'),
+  path.join(home, '.agents', 'skills'),
+  path.join(cwd, '.claude', 'skills'),
+  path.join(cwd, '.cursor', 'skills'),
+  path.join(cwd, '.github', 'skills'),
+  path.join(cwd, '.agents', 'skills'),
+];
 const CONFIG_JSONS = [
-  path.join(os.homedir(), '.gemini', 'config', 'hooks.json'),
-  path.join(os.homedir(), '.gemini', 'config', 'mcp_config.json'),
+  path.join(home, '.gemini', 'config', 'hooks.json'),
+  path.join(home, '.gemini', 'config', 'mcp_config.json'),
 ];
 const TEXT_EXT = /\.(md|json|ya?ml)$/i;
 
@@ -38,7 +50,7 @@ function walk(dir, fn) {
 
 function checkJson(file) {
   try {
-    return JSON.parse(fs.readFileSync(file, 'utf8'));
+    return JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
   } catch (e) {
     problems.push(`Invalid JSON: ${file} (${e.message})`);
     return null;
@@ -46,7 +58,7 @@ function checkJson(file) {
 }
 
 function checkSkill(file) {
-  const text = fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
+  const text = fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, '').replace(/\r\n/g, '\n');
   const m = text.match(/^---\n([\s\S]*?)\n---/);
   if (!m) return problems.push(`No frontmatter: ${file}`);
   if (!/^name:/m.test(m[1])) problems.push(`Frontmatter missing name: ${file}`);
@@ -92,8 +104,11 @@ for (const root of ROOTS) {
 for (const root of SKILL_ROOTS) {
   if (!fs.existsSync(root)) continue;
   for (const s of fs.readdirSync(root)) {
-    const sk = path.join(root, s, 'SKILL.md');
-    if (fs.existsSync(sk)) { stripBom(sk); checkSkill(sk); }
+    const sdir = path.join(root, s);
+    if (!fs.statSync(sdir).isDirectory()) continue;
+    walk(sdir, (f) => { if (TEXT_EXT.test(f)) stripBom(f); });
+    const sk = path.join(sdir, 'SKILL.md');
+    if (fs.existsSync(sk)) checkSkill(sk);
   }
 }
 

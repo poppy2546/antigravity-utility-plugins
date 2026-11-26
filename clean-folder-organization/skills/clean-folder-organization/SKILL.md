@@ -15,7 +15,7 @@ This skill enforces strict workspace hygiene and file organization guidelines wh
 
 2. **Always Create and Use Dedicated Folders:**
    - If generating scripts or utilities for the user, create and place them inside a named folder (e.g., `~/Desktop/<ProjectOrToolName>/` or `~/Tools/<ToolName>/`).
-   - If generating project code, create a dedicated subdirectory (e.g., in `~/.gemini/antigravity/scratch/<ProjectName>/` or `<Workspace>/<Subfolder>/`).
+   - If generating project code, create a dedicated subdirectory inside the active workspace (e.g., `<Workspace>/<Subfolder>/` or `~/Projects/<ProjectName>/`).
    - Standard directory conventions:
      - `scripts/`: automation, batch scripts, powershell scripts.
      - `src/`: source code and application logic.

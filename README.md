@@ -1,25 +1,25 @@
 # Antigravity Utility Plugins
 
-รวมปลั๊กอินช่วยจัดระเบียบไฟล์และดูแลสุขภาพปลั๊กอิน/สกิลสำหรับ Google Antigravity
+Two lightweight utility plugins for Google Antigravity: workspace file organization and plugin/skill health checks.
 
-## ปลั๊กอินในชุดนี้
+## Included Plugins
 
 ### 1. `clean-folder-organization`
-บังคับให้ AI จัดระเบียบไฟล์ที่สร้างใหม่ทั้งหมด ไม่วางไฟล์รก Desktop หรือ root ของโปรเจกต์
-- ห้ามสร้างไฟล์ลง `~/Desktop/` โดยตรง
-- จัดเก็บสคริปต์/เอกสาร/โค้ดลงโฟลเดอร์ย่อยที่ชัดเจน (`scripts/`, `src/`, `docs/`, `output/`)
+Keeps AI-generated files organized and prevents desktop or workspace root clutter.
+- Never saves scripts or loose files directly to `~/Desktop/` or the workspace root (unless the user explicitly requests a specific path).
+- Organizes files into dedicated subdirectories (`scripts/`, `src/`, `docs/`, `output/`).
 
 ### 2. `skill-doctor`
-สแกนและซ่อมไฟล์ปลั๊กอิน/สกิลที่ config พังอัตโนมัติ (รันผ่าน Node.js)
-- ลบ UTF-8 BOM ออกจากไฟล์ `.md`, `.json`, `.yml`, `.yaml` อัตโนมัติ
-- สร้าง `plugin.json` พื้นฐานให้ปลั๊กอินที่ขาดไฟล์นี้
-- ตรวจ JSON syntax และฟิลด์ `name` ของ `plugin.json`
-- ตรวจ frontmatter (`name:`, `description:`) ของ `SKILL.md`
-- ตรวจ `~/.gemini/config/hooks.json` และ `mcp_config.json` (BOM + JSON syntax)
+Audits and auto-fixes broken plugin/skill configurations using Node.js (no external dependencies).
+- Strips UTF-8 BOM from `.md`, `.json`, `.yml`, and `.yaml` files automatically.
+- Generates a minimal `plugin.json` if missing.
+- Validates JSON syntax and the `name` field in `plugin.json`.
+- Checks `SKILL.md` frontmatter (`name:` and `description:`).
+- Validates `~/.gemini/config/hooks.json` and `mcp_config.json` (BOM + JSON syntax).
 
-## วิธีติดตั้ง
+## Installation
 
-คัดลอกโฟลเดอร์ปลั๊กอินที่ต้องการไปวางใน `~/.gemini/config/plugins/`:
+Copy the plugin folders into `~/.gemini/config/plugins/`:
 
 **Windows (PowerShell):**
 ```powershell
@@ -35,23 +35,23 @@ cp -r ./clean-folder-organization ~/.gemini/config/plugins/
 cp -r ./skill-doctor ~/.gemini/config/plugins/
 ```
 
-จากนั้นเปิดแชทใหม่เพื่อให้ Antigravity โหลดปลั๊กอิน
+Open a new chat for Antigravity to load the plugins.
 
-## การใช้งาน `skill-doctor`
+## Usage (`skill-doctor`)
 
-ตรวจและซ่อมอัตโนมัติ:
-- Windows (PowerShell):
+Audit and auto-fix:
+- **Windows (PowerShell):**
   ```powershell
   node "$env:USERPROFILE\.gemini\config\plugins\skill-doctor\scripts\fix.js"
   ```
-- macOS / Linux:
+- **macOS / Linux:**
   ```bash
   node ~/.gemini/config/plugins/skill-doctor/scripts/fix.js
   ```
 
-ตรวจอย่างเดียว (ไม่แก้ไขไฟล์) ให้เติม `--check` ต่อท้ายคำสั่ง
+Report only (no file changes): append `--check` to the command.
 
-*(ทางเลือก)* หากต้องการให้ตรวจอัตโนมัติทุกครั้งที่จบเทิร์น ให้เพิ่ม `stop-hook.js` ลงใน `~/.gemini/config/hooks.json`:
+*(Optional)* To run automatically at the end of every turn, add `stop-hook.js` to `~/.gemini/config/hooks.json`:
 
 ```json
 "skill-doctor": {
@@ -65,4 +65,4 @@ cp -r ./skill-doctor ~/.gemini/config/plugins/
 }
 ```
 
-แทนที่ `<HOME>` ด้วย path home ของเครื่องคุณ (เช่น `C:/Users/<username>` บน Windows หรือ `/Users/<username>` บน macOS)
+Replace `<HOME>` with your home directory path (e.g. `C:/Users/<username>` on Windows or `/Users/<username>` on macOS).
